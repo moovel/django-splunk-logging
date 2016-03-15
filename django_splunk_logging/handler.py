@@ -37,13 +37,7 @@ class SplunkHandler(logging.Handler):
                 'path': record.pathname,
             }
 
-        user_id = None
-        if request:
-            if request.user.is_authenticated():
-                user_id = request.user.id
-
         SplunkEvent(key="server_log",
                     name=record.levelname,
                     request=request,
-                    obj=record_data,
-                    user=user_id)
+                    obj=record_data)

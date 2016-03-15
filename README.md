@@ -96,7 +96,7 @@ class InvalidParameter(Exception):
         super(InvalidParameter, self).__init__(message)
 
 def location(request):
-    if not request.GET.get('lat', None) and request.GET.get('lng', None):
+    if not request.GET.get('lat', None) or not request.GET.get('lng', None):
         raise InvalidParameter("Must supply lat and lng")
 ```
 
