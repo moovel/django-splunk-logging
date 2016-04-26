@@ -23,6 +23,8 @@ class SplunkEvent(object):
     _auth_key = "Splunk {0}".format(settings.SPLUNK_TOKEN)
 
     def __init__(self, *args, **kwargs):
+        if not settings.SPLUNK_LOGS:
+            return
         self._key = kwargs.pop('key', "Generic")
         self._timestamp = str(time.time())
         self._request = kwargs.pop('request', _get_request())
@@ -33,7 +35,7 @@ class SplunkEvent(object):
         if self._request is not None:
             try:
                 self._auth = self._request.user.is_authenticated()
-                self._user = self._request.user.id
+                self._user = self._request.session.get('user_id', None)
             except:
                 self._auth = False
 
@@ -81,8 +83,6 @@ class SplunkEvent(object):
         return True
 
     def send_to_splunk(self):
-        if not settings.SPLUNK_LOGS:
-            return
         url = settings.SPLUNK_ADDRESS + ":" + \
             settings.SPLUNK_EVENT_COLLECTOR_PORT + \
             '/services/collector/event'
