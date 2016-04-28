@@ -116,13 +116,18 @@ class SplunkEvent(object):
                 'GET': self._request.GET,
                 'method': self._request.method,
                 'META': {
-                    'HTTP_HOST': self._request.META.get('HTTP_HOST', None),
-                    'HTTP_REFERER': self._request.META.get('HTTP_REFERER', None),
-                    'HTTP_USER_AGENT': self._request.META.get('HTTP_USER_AGENT', None),
-                    'HTTP_X_FORWARDED_FOR': self._request.META.get('HTTP_X_FORWARDED_FOR', None),
-                    'CLIENT': 'OTHER',
+                    # 'HTTP_HOST': self._request.META.get('HTTP_HOST', None),
+                    # 'HTTP_REFERER': self._request.META.get('HTTP_REFERER', None),
+                    # 'HTTP_USER_AGENT': self._request.META.get('HTTP_USER_AGENT', None),
+                    # 'HTTP_X_FORWARDED_FOR': self._request.META.get('HTTP_X_FORWARDED_FOR', None),
+                    # 'CLIENT': 'OTHER',
                 },
             }
+            
+            for k,v in self._request.META.iteritems():
+                if type(v) == int or type(v) == str:
+                    data['META'][k] = v
+
             if 'is_ios' and 'is_android' in self._request.__dict__:
                 if self._request.is_ios:
                     data['META']['CLIENT'] = 'ios'
